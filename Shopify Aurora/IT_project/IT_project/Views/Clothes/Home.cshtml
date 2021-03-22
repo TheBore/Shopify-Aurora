@@ -1,0 +1,411 @@
+﻿@model IT_project.Models.ViewModels.AllClothesViewModel
+@{
+    ViewBag.Title = "Home";
+}
+
+<h2>Let's go shopping</h2>
+<p>
+    @if (User.IsInRole("shop"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+</p>
+
+
+@using (Html.BeginForm("Index", "Clothes", FormMethod.Get, new { id = "clothesForm" }))
+{
+
+    @Html.RadioButton("Sex", 0)
+    ;
+    @Html.Label("Male")
+    @Html.RadioButton("Sex", 1)
+    ;
+    @Html.Label("Female")
+    @Html.RadioButton("Sex", 3)
+    ;
+    @Html.Label("All")
+    <br />
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.Label("Choose size", new { @class = "control-label" })
+            <div>
+                @Html.DropDownList("selectedSize", (SelectList)ViewBag.Sizes)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.Label("Choose brand", new { @class = "control-label" })
+            <div>
+                @Html.DropDownList("selectedBrand", (SelectList)ViewBag.Brands)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.Label("Choose type", new { @class = "control-label" })
+            <div>
+                @Html.DropDownList("selectedType", (SelectList)ViewBag.Types)
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.Label("Choose price", new { @class = "control-label" })
+            <div>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="2000" class="slider" id="myRange" value="@ViewBag.SelectedPrice" oninput="amount.value=myRange.value" onchange="amount.value=myRange.value">
+                    <input type="text" name="selectedPrice" id="amount" value="@ViewBag.SelectedPrice" readonly oninput="myRange.value=amount.value" onchange="myRange.value=amount.value">
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+    </div>
+<div class="row">
+    @foreach (var item in Model.AllClothes)
+    {
+
+        <div class="col-3 pb-5">
+            <div class="card p-3">
+                <a href=@Url.Action("Details", "Clothes", new {id = item.Id})>
+                    @*<img src="@item.Image" style=" height:180px; width:200px" class="card-img-top mx-auto" alt="...">*@
+
+                    <div class="imageDetails">
+                        <img src="@item.Image" alt="..." class="card-img-top mx-auto" style="height:180px; width:200px">
+                        <div class="middle">
+                            <div class="text">Details</div>
+                        </div>
+                    </div>
+
+                </a>
+                <div class="card-body">
+
+                    <h2 class="card-title">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </h2>
+                    <h4 class="card-text">
+                        @Html.DisplayFor(modelItem => item.Brand)
+                    </h4>
+                    <p class="card-text">
+
+                        <span class="text-left">
+                            @foreach (var size in item.Sizes)
+                            {
+                                <span>@size.Size </span>
+                            }
+                        </span>
+                        &nbsp;&nbsp;&nbsp;
+                        <span class="text-right">
+                            @foreach (var color in item.Colors)
+                            {
+                                <input type="color" name="colors" value=@color.Color disabled style="width: 20px; border: none; padding: 0px">
+                            }
+                        </span>
+
+                    </p>
+
+                    <p class="card-text">
+
+                        <span class="text-left">
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </span>
+                        &nbsp;&nbsp;&nbsp;
+                        <span class="text-right">
+                            @Html.DisplayFor(modelItem => item.AvailablePieces)
+                        </span>
+
+                    </p>
+
+                    <p class="card-text text-right">
+                        <button class="btn btn-lg bg-purple" disabled>
+                            @Html.DisplayFor(modelItem => item.Price) ден.
+                        </button>
+                    </p>
+
+                    @if (!User.IsInRole("shop") && User.Identity.IsAuthenticated)
+                    {
+                        <button class="btn btn-dark" type="button" id="add_to_cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </svg>
+                            @Html.ActionLink("Add To Cart", "AddToCart", new { id = item.Id })
+                        </button>}
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+@*<table id="clothesTable" class="tabled">
+        <thead>
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Sex
+                </th>
+                <th>
+                    Available pieces
+                </th>
+                <th>
+                    Sizes
+                </th>
+                <th>
+                    Colors
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AllClothes)
+            {
+
+                <div class="card" style="width: 18rem;">
+                    <img src="@item.Image" style="max-height:180px; max-width:200px" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Brand)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </p>
+                        <p class="card-text">
+                            @Html.DisplayFor(modelItem => item.AvailablePieces)
+                        </p>
+                        <p class="card-text">
+                            @foreach (var size in item.Sizes)
+                            {
+                                <span>@size.Size </span>
+                            }
+                        </p>
+                        <p class="card-text">
+                            @foreach (var color in item.Colors)
+                            {
+                                <input type="color" name="colors" value=@color.Color readonly style="width: 20px; border: none; padding: 0px; appearance: none">
+                            }
+                        </p>
+                        <button class="btn btn-info">
+                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                        </button>
+                        @if (!User.IsInRole("shop") && User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-dark" type="button" id="add_to_cart">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                </svg>
+                                @Html.ActionLink("Add To Cart", "AddToCart", new { id = item.Id })
+                            </button>}
+                    </div>
+                </div>
+
+
+                <tr>
+                        <td>
+                            <img src="@item.Image" style="max-height:180px; max-width:200px" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Brand)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AvailablePieces)
+                        </td>
+                        <td>
+                            @foreach (var size in item.Sizes)
+                            {
+                                <span>@size.Size </span>
+                            }
+                        </td>
+                        <td>
+                            @foreach (var color in item.Colors)
+                            {
+                                <input type="color" name="colors" value=@color.Color readonly style="width: 20px; border: none; padding: 0px; appearance: none">
+                            }
+                        </td>
+                        <td>
+
+                            <button class="btn btn-info">
+                                @Html.ActionLink("Details", "Details", new { id = item.Id })
+                            </button>
+                            @if (!User.IsInRole("shop") && User.Identity.IsAuthenticated)
+                            {
+                                <button class="btn btn-dark" type="button" id="add_to_cart">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                    </svg>
+                                    @Html.ActionLink("Add To Cart", "AddToCart", new { id = item.Id })
+                                </button>}
+
+
+                        </td>
+                    </tr>
+            }
+        </tbody>
+
+    </table>*@
+
+
+@section scripts {
+    <script src="~/Scripts/App Scripts/clothes.js"></script>
+
+    <script>
+        $("#clothesTable").DataTable();
+    </script>
+
+
+}
+
+
+@*@using (Html.BeginForm("Index", "Clothes", FormMethod.Get, new { id = "clothesForm" }))
+    {
+        @Html.RadioButton("Sex", 0)
+        ;
+        @Html.Label("Male")
+        @Html.RadioButton("Sex", 1)
+        ;
+        @Html.Label("Female")
+        @Html.RadioButton("Sex", 3)
+        ;
+        @Html.Label("All")
+        <br />
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.Label("Choose size", new { @class = "control-label" })
+                <div>
+                    @Html.DropDownList("selectedSize", (SelectList)ViewBag.Sizes)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.Label("Choose brand", new { @class = "control-label" })
+                <div>
+                    @Html.DropDownList("selectedBrand", (SelectList)ViewBag.Brands)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.Label("Choose type", new { @class = "control-label" })
+                <div>
+                    @Html.DropDownList("selectedType", (SelectList)ViewBag.Types)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.Label("Choose price", new { @class = "control-label" })
+                <div>
+                    <div class="slidecontainer">
+                        <input type="range" min="1" max="2000" class="slider" id="myRange" value="@ViewBag.SelectedPrice" oninput="amount.value=myRange.value" onchange="amount.value=myRange.value">
+                        <input type="text" name="selectedPrice" id="amount" value="@ViewBag.SelectedPrice" readonly oninput="myRange.value=amount.value" onchange="myRange.value=amount.value">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <table id="clothesTable" class="tabled">
+        <thead>
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Brand
+                </th>
+                <th>
+                    Price
+                </th>
+                <th>
+                    Sex
+                </th>
+                <th>
+                    Available pieces
+                </th>
+                <th>
+                    Sizes
+                </th>
+                <th>
+                    Colors
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach (var item in Model.AllClothes)
+                {
+
+                    <td>
+                        <img src="@item.Image" style="max-height:180px; max-width:200px" /> <br />
+                        @Html.DisplayFor(modelItem => item.Name) <br />
+                        @Html.DisplayFor(modelItem => item.Price) <br /> <
+                        <button class="btn btn-info">
+                            @Html.ActionLink("Details", "Details", new { id = item.Id })
+                        </button>
+                        <button class="btn btn-dark" type="button" id="add_to_cart">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                            </svg>
+                            @Html.ActionLink("Add To Cart", "AddToCart", new { id = item.Id })
+                        </button>
+
+
+                    </td>
+
+
+            }
+
+                </tr>
+            </tbody>
+    </table>
+
+
+    @section scripts {
+        <script src="~/Scripts/App Scripts/clothes.js"></script>
+
+        <script>
+            $("#clothesTable").DataTable();
+        </script>
+
+
+    }*@

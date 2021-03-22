@@ -1,0 +1,21 @@
+﻿@model IT_project.Models.Clothes
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2>Items in your shopping cart:</h2>
+
+
+@using (Html.BeginForm())
+{
+    
+   <ul>
+       @foreach(var item in ViewBag.data)
+       {
+           <li>@item.Name </li>
+       }
+   </ul>
+    
+}
+
+

@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Shopify</title>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+
+
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" type="text/css" href="~/Content/bootstrap-side-modals.css" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.23/datatables.min.css" />
+    @Scripts.Render("~/bundles/modernizr")
+
+
+    <style>
+        .bg-grey {
+            background-color: #1F1F1F;
+        }
+
+        body {
+            background: linear-gradient(to top, #ffffcc 0%, #beaebb 100%);
+            padding: 0px;
+        }
+
+        .bg-purple {
+            background: linear-gradient(to top, #ffffcc 0%, #beaebb 100%);
+        }
+
+        .imageDetails {
+            position: relative;
+        }
+
+        .card-img-top {
+            opacity: 1;
+            display: block;
+            width: 100%;
+            height: auto;
+            transition: .5s ease;
+            backface-visibility: hidden;
+        }
+
+        .middle {
+            transition: .5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .imageDetails:hover .card-img-top {
+            opacity: 0.3;
+        }
+
+        .imageDetails:hover .middle {
+            opacity: 1;
+        }
+
+        .text {
+            background: linear-gradient(to top, #ffffcc 0%, #beaebb 100%);
+            color: white;
+            font-size: 16px;
+            padding: 16px 32px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg navbar-default bg-grey">
+
+            <a href=@Url.Action("Index", "Home") class="navbar-brand">
+                <img src=@Url.Content("~/Content/Images/logop.jpg") style="height:50px; margin-top:-15px" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="nav navbar-nav">
+
+                    <li>
+                        @Html.ActionLink("Shopify", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                    </li>
+
+                    <li>@Html.ActionLink("Clothes", "Index", "Clothes")</li>
+
+                    @if (User.IsInRole("user"))
+                    {
+
+                        <li>@Html.ActionLink("Shopping Cart", "AddToCart", "Clothes")</li>
+                    }
+
+                    @if (User.IsInRole("shop"))
+                    {
+                        <li>@Html.ActionLink("Items from your shop", "ItemsForShop", "Clothes")</li>
+                    }
+
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </nav>
+    </header>
+
+
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Shopify</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.23/datatables.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+
+
+ 
+</body>
+</html>

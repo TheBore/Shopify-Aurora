@@ -1,0 +1,104 @@
+﻿@model IT_project.Models.Clothes
+
+@{
+    ViewBag.Title = "Details";
+}
+
+    <button class="btn btn-lg bg-purple" disabled>
+        Details
+    </button>
+
+<div>
+    
+    <hr />
+    <dl class="dl-horizontal">
+        <dd>
+           
+        </dd>
+
+        <div class="row">
+
+            <div class=" сol-12 col-md-6 col-lg-6">
+                <img src="@Model.Image" style="max-height:400px; max-width:400px;" />
+            </div>
+            <div class=" сol-12 col-md-6 col-lg-6">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Name)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Name)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Brand)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Brand)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Price)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Price)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Type)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Type)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.AvailablePieces)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.AvailablePieces)
+                </dd>
+
+                <dt>
+                    @Html.Label("Colors", new { @class = "control-label" })
+                </dt>
+
+                <dd>
+                    @foreach (var color in Model.Colors)
+                    {
+                        <input type="color" name="colors" value=@color.Color disabled>
+                    }
+                </dd>
+
+                <dt>
+                    @Html.Label("Sizes", new { @class = "control-label" })
+                </dt>
+
+                <dd>
+                    @foreach (var size in Model.Sizes)
+                    {
+                        <input type="text" name="colors" value=@size.Size style="width:50px" readonly>
+                    }
+                </dd>
+            </div>
+
+        </div>
+
+           
+
+</dl>
+</div>
+<p>
+    <button class="btn btn-lg bg-purple">
+        @Html.ActionLink("Back", "Index")
+
+    </button>
+    
+</p>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

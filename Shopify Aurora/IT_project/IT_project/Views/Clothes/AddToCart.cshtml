@@ -1,0 +1,211 @@
+﻿@using System.Windows.Forms
+@model IT_project.Models.ShoppingCart
+
+@{
+    ViewBag.Title = "AddToCart";
+}
+
+<h2>Items in shopping cart</h2>
+@using (Html.BeginForm())
+{
+    <table id="shoppingCartTable">
+        <thead>
+        <tr>
+            <th>
+                    
+            </th>
+            <th>
+                Product Details
+            </th>
+            <th>
+                Quantity
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach (var item in Model.Clothes)
+        {
+            <tr>
+                <td>
+                    <img src="@item.Image" style="max-height:180px; max-width:200px" />
+
+                </td>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <h4><b>@item.Name</b></h4>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <b>Sex: </b>@item.Type
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <b> Brand: </b> @item.Brand
+                            </td>
+                        </tr>
+                    </table>
+
+                    <table>
+                        <tr>
+                            <td>
+                                <b>Colors:</b>
+                                @foreach (var color in item.Colors)
+                                {
+                                    <input type="checkbox" name="colorscb"/>
+                                    <input type="color" name="colors" value=@color.Color disabled />
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td>
+                    <input type="number" class="quantity" name="quantity" min="1" max="10" value="1">
+                </td>
+
+                <td class="itemPrice">
+                    @item.Price
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-danger" onclick="ShowModal(@item.ID)">
+                        Delete
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="@item.ID" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete confirmation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="button" class="btn btn-danger">
+                                        @Html.ActionLink("Delete", "DeleteItem", new { id = item.ID },
+                                            new { @class = "text-light" })
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+
+    <br/>
+
+    <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="buyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Finalizing your purchase</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="buyBtn" class="btn btn-success">Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-success btn-lg" id="showBuyBtn" style="float: right">
+        Buy
+    </button>
+
+}
+
+@section scripts{
+    <script src="~/Scripts/App Scripts/clothes.js"></script>
+    <script>
+        var table = $("#shoppingCartTable").DataTable({
+            columnDefs: [
+                { orderable: false, targets: [0,2,4] }
+            ],
+            order: [[1, 'asc']]
+        });
+        var quantities = [];
+        var itemPrices = [];
+
+        function ShowModal(id) {
+            var call = "#" + id;
+            $(call).modal('toggle');
+        };
+
+        $('#showBuyBtn').click(function() {
+
+            $('.itemPrice').each(function() {
+                itemPrices.push((parseInt($(this).text())))
+            });
+            $('.quantity').each(function() {
+                quantities.push((parseInt($(this).val())))
+            });
+            var totalPrice = 0;
+            for (var i = 0; i < itemPrices.length; i++) {
+                totalPrice += itemPrices[i] * quantities[i];
+            }
+
+            console.log(quantities);
+            console.log(itemPrices);
+            var modalBody = 'Dear Sir/Madam, your total is: ' + totalPrice;
+            $('.modal-body').html(modalBody);
+            $('#buyModal').modal('toggle');
+
+        });
+
+
+        $("#buyBtn").click(function() {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddToCart", "Clothes")',
+                contentType: "application/json; charset=utf-8",
+                success: function (recData) {
+                    window.location.href = "/Clothes/AddToCart";
+                },
+                error: function() {
+                    alert('A error');
+                }
+            });
+            quantities = [];
+            itemPrices = [];
+        });
+
+        $("#cancelBtn").click(function() {
+            quantities = [];
+            itemPrices = [];
+        });
+    </script>
+}
+
