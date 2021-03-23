@@ -69,4 +69,3 @@ Test users with filled in shop:
 - User
   - username: user@gmail.com
   - password: useruser1U!
-  SHOP: shop.user@test.com PASS: shopshop1S!
